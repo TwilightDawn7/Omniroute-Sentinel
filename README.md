@@ -1,159 +1,121 @@
-# Turborepo starter
+# 🚀 OmniRoute Sentinel  
+### AI-Verified Supply Chain Defense
 
-This Turborepo starter is maintained by the Turborepo core team.
+---
 
-## Using this example
+## 🧠 Overview
 
-Run the following command:
+**OmniRoute Sentinel** is an AI-powered logistics intelligence system designed to transform supply chains from **reactive systems into proactive decision engines**.
 
-```sh
-npx create-turbo@latest
-```
+Instead of reacting to delays, our system **predicts disruptions early** and suggests optimized routes to avoid them.
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## 🌍 Problem Statement
 
-### Apps and Packages
+Modern supply chains suffer from:
+- Lack of real-time disruption awareness
+- Delayed response to external events (weather, traffic, strikes)
+- Inefficient routing decisions
+- Financial and operational losses
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+---
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## ⚡ Our Solution
 
-### Utilities
+OmniRoute Sentinel introduces a **preemptive disruption detection system**:
 
-This Turborepo has some additional tools already setup for you:
+### 🔄 Workflow
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+1. 📡 Fetch real-time data (news, weather, traffic)
+2. 🧠 Use AI to detect potential threats
+3. 🔍 Verify threats using external APIs
+4. 📍 Map risks to active shipments
+5. 🔁 Suggest optimized rerouting strategies
 
-### Build
+---
 
-To build all apps and packages, run the following command:
+## 🧩 System Architecture
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+### 🧠 Admin Dashboard (Control Tower)
+- Global shipment visibility
+- Risk monitoring
+- Alerts & analytics
+- Decision-making interface
 
-```sh
-cd my-turborepo
-turbo build
-```
+---
 
-Without global `turbo`, use your package manager:
+### 🚗 Driver App (Execution Layer)
+- Real-time navigation
+- Route updates
+- Disruption alerts
+- Minimal, map-focused UI
 
-```sh
-cd my-turborepo
-npx turbo build
-npm dlx turbo build
-npm exec turbo build
-```
+---
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## 📁 Monorepo Structure
+omniroute-sentinel/
+│
+├── apps/
+│ ├── admin-dashboard/ # Main dashboard (Next.js)
+│ └── driver-app/ # Driver interface (Next.js)
+│
+├── packages/
+│ ├── types/ # Shared TypeScript types
+│ ├── api/ # API layer (mock for now)
+│ └── ui/ # Shared UI components (future)
+│
+├── services/
+│ ├── backend/ # Backend (future phase)
+│ └── ai-engine/ # AI + verification logic
+│
+├── docs/ # Documentation
+│
+├── turbo.json # Turborepo config
+├── package.json
+└── README.md
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
 
-```sh
-turbo build --filter=docs
-```
+---
 
-Without global `turbo`:
+## ⚙️ Tech Stack
 
-```sh
-npx turbo build --filter=docs
-npm exec turbo build --filter=docs
-npm exec turbo build --filter=docs
-```
+### 🎨 Frontend
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
 
-### Develop
+---
 
-To develop all apps and packages, run the following command:
+### 🧠 Monorepo
+- Turborepo
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+---
 
-```sh
-cd my-turborepo
-turbo dev
-```
+### 🔧 Backend (Planned)
+- Node.js + Express
+- MongoDB
+- Redis (optional)
 
-Without global `turbo`, use your package manager:
+---
 
-```sh
-cd my-turborepo
-npx turbo dev
-npm exec turbo dev
-npm exec turbo dev
-```
+### 🤖 AI Layer (Planned)
+- OpenAI / Gemini APIs
+- NLP-based threat detection
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+---
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+### 🌐 External APIs (Planned)
+- Weather APIs
+- Traffic APIs
+- News APIs
 
-```sh
-turbo dev --filter=web
-```
+---
 
-Without global `turbo`:
+## 🚀 Getting Started
 
-```sh
-npx turbo dev --filter=web
-npm exec turbo dev --filter=web
-npm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-npm exec turbo login
-npm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-npm exec turbo link
-npm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+### 1. Clone the repo
+```bash
+git clone https://github.com/YOUR_USERNAME/omniroute-sentinel.git
+cd omniroute-sentinel
