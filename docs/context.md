@@ -12,8 +12,10 @@ AI-powered logistics intelligence system that:
 
 ---
 
+
 ## Monorepo Structure
 
+```
 omniroute-sentinel/
 ├── apps/
 │   ├── driver-app/ (PORT 3001 - COMPLETE)
@@ -26,9 +28,8 @@ omniroute-sentinel/
 │   ├── backend/
 │   └── ai-engine/
 └── docs/
-└── context.md
-
----
+    └── context.md
+```
 
 ## Tech Stack
 
