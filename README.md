@@ -54,28 +54,29 @@ OmniRoute Sentinel introduces a **preemptive disruption detection system**:
 ---
 
 ## 📁 Monorepo Structure
+
+```
 omniroute-sentinel/
 │
 ├── apps/
-│ ├── admin-dashboard/ # Main dashboard (Next.js)
-│ └── driver-app/ # Driver interface (Next.js)
+│   ├── admin-dashboard/
+│   └── driver-app/
 │
 ├── packages/
-│ ├── types/ # Shared TypeScript types
-│ ├── api/ # API layer (mock for now)
-│ └── ui/ # Shared UI components (future)
+│   ├── types/
+│   ├── api/
+│   └── ui/
 │
 ├── services/
-│ ├── backend/ # Backend (future phase)
-│ └── ai-engine/ # AI + verification logic
+│   ├── backend/
+│   └── ai-engine/
 │
-├── docs/ # Documentation
+├── docs/
 │
-├── turbo.json # Turborepo config
+├── turbo.json
 ├── package.json
 └── README.md
-
-
+```
 ---
 
 ## ⚙️ Tech Stack
