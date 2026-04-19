@@ -120,3 +120,10 @@ omniroute-sentinel/
 ```bash
 git clone https://github.com/YOUR_USERNAME/omniroute-sentinel.git
 cd omniroute-sentinel
+```
+
+## Run Project (Windows)
+
+Go to the scripts folder and double click:
+
+start.bat
