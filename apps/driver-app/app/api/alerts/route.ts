@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { Alert } from "@/types";
+import type { Alert, ApiResponse } from "@repo/types";
 
 function generateAlerts(): Alert[] {
   const now = new Date();
@@ -70,11 +70,12 @@ function generateAlerts(): Alert[] {
 export async function GET() {
   try {
     const alerts = generateAlerts();
-    return NextResponse.json({
+    const response: ApiResponse<Alert[]> = {
       success: true,
       data: alerts,
       timestamp: new Date().toISOString(),
-    });
+    };
+    return NextResponse.json(response);
   } catch (error) {
     return NextResponse.json(
       { success: false, error: "Failed to fetch alerts" },

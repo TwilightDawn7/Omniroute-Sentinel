@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
+import type { ApiResponse, CityOption } from "@repo/types";
 
-export const CITIES_LIST = [
+export const CITIES_LIST: CityOption[] = [
   { key: "delhi", name: "Delhi" },
   { key: "mumbai", name: "Mumbai" },
   { key: "jaipur", name: "Jaipur" },
@@ -14,8 +15,10 @@ export const CITIES_LIST = [
 ];
 
 export async function GET() {
-  return NextResponse.json({
+  const response: ApiResponse<CityOption[]> = {
     success: true,
     data: CITIES_LIST,
-  });
+  };
+
+  return NextResponse.json(response);
 }

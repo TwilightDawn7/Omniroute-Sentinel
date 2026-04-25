@@ -1,4 +1,4 @@
-import { DriverRouteData, Alert, ApiResponse } from "@/types";
+import type { Alert, ApiResponse, DriverRouteData } from "@repo/types";
 
 const BASE_URL =
   typeof window !== "undefined" ? window.location.origin : "http://localhost:3001";

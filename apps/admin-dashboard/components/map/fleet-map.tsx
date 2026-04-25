@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic"
 import { Map } from "lucide-react"
 
-import type { ShipmentVehicle } from "@/lib/mock-data"
+import type { ShipmentVehicle } from "@repo/types"
 
 const FleetMapClient = dynamic(() => import("@/components/map/fleet-map-client"), {
   ssr: false,

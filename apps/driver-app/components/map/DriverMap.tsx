@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { DriverRouteData } from "@/types";
+import type { DriverRouteData } from "@repo/types";
 
 interface DriverMapProps {
   routeData: DriverRouteData;

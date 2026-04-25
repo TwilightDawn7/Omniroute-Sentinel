@@ -9,6 +9,7 @@
   "lint": "next lint"
 },
   "dependencies": {
+    "@repo/types": "*",
     "@types/leaflet": "^1.9.21",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

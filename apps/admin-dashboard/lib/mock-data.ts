@@ -1,47 +1,6 @@
-export type VehicleStatus = "On Route" | "Idle" | "Delayed" | "Maintenance"
+import type { ShipmentAlert, ShipmentVehicle } from "@repo/types"
+
 export type StatusTone = "cyan" | "blue" | "green" | "amber"
-export type AlertSeverity = "low" | "medium" | "high"
-export type AlertType = "traffic" | "weather" | "fuel" | "closure" | "security"
-export type RerouteCause = "delay" | "closure" | "natural_disaster" | "security" | "conflict"
-
-export type ShipmentVehicle = {
-  id: string
-  driver: string
-  vehicleType: string
-  cargo: string
-  route: string
-  speed: number
-  fuel: number
-  status: VehicleStatus
-  location: string
-  shipments: number
-  position: [number, number]
-  activeRoutePath: [number, number][]
-  originalRoutePath?: [number, number][]
-  reroute?: {
-    cause: RerouteCause
-    reason: string
-    divertedVia: string
-    blockedZone: string
-    etaImpactMinutes: number
-  }
-}
-
-export type ShipmentAlert = {
-  id: string
-  title: string
-  message: string
-  severity: AlertSeverity
-  type: AlertType
-  location: string
-  coordinates: {
-    lat: number
-    lng: number
-  }
-  timestamp: string
-  isRead: boolean
-  affectsRoute: boolean
-}
 
 export type QuickAction = {
   label: string

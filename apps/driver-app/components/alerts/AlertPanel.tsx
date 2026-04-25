@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert } from "@/types";
+import type { Alert } from "@repo/types";
 import { formatDistanceToNow } from "date-fns";
 
 const severityStyle: Record<string, { bg: string; text: string; dot: string; border: string }> = {

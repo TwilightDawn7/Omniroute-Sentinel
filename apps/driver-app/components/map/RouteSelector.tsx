@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
-interface City { key: string; name: string; }
+import type { ApiResponse, CityOption } from "@repo/types";
 
 interface RouteSelectorProps {
   onRouteSelect: (origin: string, destination: string) => void;
@@ -12,13 +11,15 @@ interface RouteSelectorProps {
 }
 
 export default function RouteSelector({ onRouteSelect, currentOrigin, currentDestination, isLoading }: RouteSelectorProps) {
-  const [cities, setCities] = useState<City[]>([]);
+  const [cities, setCities] = useState<CityOption[]>([]);
   const [origin, setOrigin] = useState(currentOrigin);
   const [destination, setDestination] = useState(currentDestination);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    fetch("/api/cities").then(r => r.json()).then(j => setCities(j.data));
+    fetch("/api/cities")
+      .then((r) => r.json())
+      .then((j: ApiResponse<CityOption[]>) => setCities(j.data));
   }, []);
 
   useEffect(() => {
