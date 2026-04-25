@@ -1,6 +1,6 @@
 import { Fuel, MapPin, Timer } from "lucide-react"
 
-import type { ShipmentVehicle } from "@/lib/mock-data"
+import type { ShipmentVehicle } from "@repo/types"
 import { formatCoordinates, getStatusBadgeClass } from "@/lib/map-utils"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { fetchAlerts } from "@/lib/api";
-import { DriverRouteData, Alert } from "@/types";
+import type { Alert, ApiResponse, DriverRouteData } from "@repo/types";
 
 const REFRESH_INTERVAL = 30000;
 
@@ -23,7 +23,7 @@ export function useRouteData(origin: string, destination: string) {
       ]);
 
       if (!routeRes.ok) throw new Error("Route fetch failed");
-      const routeJson = await routeRes.json();
+      const routeJson: ApiResponse<DriverRouteData> = await routeRes.json();
 
       setRouteData(routeJson.data);
       setAlerts(alertList);

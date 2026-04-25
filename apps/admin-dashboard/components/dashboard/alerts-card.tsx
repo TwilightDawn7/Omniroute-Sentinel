@@ -1,6 +1,6 @@
 import { AlertCircle, BellRing, CloudRain, Fuel, MapPin, ShieldAlert, TriangleAlert } from "lucide-react"
 
-import type { ShipmentAlert } from "@/lib/mock-data"
+import type { ShipmentAlert } from "@repo/types"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 

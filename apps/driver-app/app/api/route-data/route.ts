@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
-import { DriverRouteData } from "@/types";
+import type { ApiResponse, CityOption, Coordinate, DriverRouteData } from "@repo/types";
 
 // All available cities with coordinates
-export const CITIES: Record<string, { lat: number; lng: number; name: string }> = {
+type NamedCoordinate = Coordinate & { name: string };
+
+export const CITIES: Record<string, NamedCoordinate> = {
   delhi: { lat: 28.6139, lng: 77.209, name: "Delhi" },
   mumbai: { lat: 19.076, lng: 72.8777, name: "Mumbai" },
   jaipur: { lat: 26.9124, lng: 75.7873, name: "Jaipur" },
@@ -17,10 +19,10 @@ export const CITIES: Record<string, { lat: number; lng: number; name: string }> 
 
 // Generate intermediate waypoints between two coordinates
 function interpolateRoute(
-  from: { lat: number; lng: number },
-  to: { lat: number; lng: number },
+  from: Coordinate,
+  to: Coordinate,
   steps: number = 4
-): { lat: number; lng: number }[] {
+): Coordinate[] {
   const points = [];
   for (let i = 0; i <= steps; i++) {
     const t = i / steps;
@@ -36,8 +38,8 @@ function interpolateRoute(
 
 // Calculate approximate distance in km
 function calcDistance(
-  from: { lat: number; lng: number },
-  to: { lat: number; lng: number }
+  from: Coordinate,
+  to: Coordinate
 ): number {
   const R = 6371;
   const dLat = ((to.lat - from.lat) * Math.PI) / 180;
@@ -137,11 +139,12 @@ export async function GET(request: Request) {
     const destination = searchParams.get("destination") || "jaipur";
 
     const data = generateRouteData(origin, destination);
-    return NextResponse.json({
+    const response: ApiResponse<DriverRouteData> = {
       success: true,
       data,
       timestamp: new Date().toISOString(),
-    });
+    };
+    return NextResponse.json(response);
   } catch (error) {
     return NextResponse.json(
       { success: false, error: "Failed to fetch route data" },
@@ -152,11 +155,13 @@ export async function GET(request: Request) {
 
 // Export cities list for the selector
 export async function POST() {
+  const data: CityOption[] = Object.entries(CITIES).map(([key, val]) => ({
+    key,
+    name: val.name,
+  }));
+
   return NextResponse.json({
     success: true,
-    data: Object.entries(CITIES).map(([key, val]) => ({
-      key,
-      name: val.name,
-    })),
+    data,
   });
 }

@@ -4,7 +4,7 @@ import L from "leaflet"
 import { MapContainer, Marker, Polyline, Popup, TileLayer, ZoomControl } from "react-leaflet"
 import { Gauge, GitBranch, Route, ShieldAlert, Truck } from "lucide-react"
 
-import type { ShipmentVehicle } from "@/lib/mock-data"
+import type { ShipmentVehicle } from "@repo/types"
 import { formatCoordinates, getFleetBounds, getRouteColor, getStatusBadgeClass } from "@/lib/map-utils"
 import { Badge } from "@/components/ui/badge"
 

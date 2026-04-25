@@ -1,4 +1,4 @@
-import type { ShipmentVehicle, VehicleStatus } from "@/lib/mock-data"
+import type { ShipmentVehicle, VehicleStatus } from "@repo/types"
 
 const statusColorMap: Record<VehicleStatus, string> = {
   "On Route": "#06b6d4",
