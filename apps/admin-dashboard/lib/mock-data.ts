@@ -1,0 +1,448 @@
+export type VehicleStatus = "On Route" | "Idle" | "Delayed" | "Maintenance"
+export type StatusTone = "cyan" | "blue" | "green" | "amber"
+export type AlertSeverity = "low" | "medium" | "high"
+export type AlertType = "traffic" | "weather" | "fuel" | "closure" | "security"
+export type RerouteCause = "delay" | "closure" | "natural_disaster" | "security" | "conflict"
+
+export type ShipmentVehicle = {
+  id: string
+  driver: string
+  vehicleType: string
+  cargo: string
+  route: string
+  speed: number
+  fuel: number
+  status: VehicleStatus
+  location: string
+  shipments: number
+  position: [number, number]
+  activeRoutePath: [number, number][]
+  originalRoutePath?: [number, number][]
+  reroute?: {
+    cause: RerouteCause
+    reason: string
+    divertedVia: string
+    blockedZone: string
+    etaImpactMinutes: number
+  }
+}
+
+export type ShipmentAlert = {
+  id: string
+  title: string
+  message: string
+  severity: AlertSeverity
+  type: AlertType
+  location: string
+  coordinates: {
+    lat: number
+    lng: number
+  }
+  timestamp: string
+  isRead: boolean
+  affectsRoute: boolean
+}
+
+export type QuickAction = {
+  label: string
+  icon: "route" | "radio" | "export" | "shield"
+}
+
+export type NavigationItem = {
+  label: string
+  icon: "dashboard" | "fleet" | "routes" | "deliveries" | "alerts" | "analytics" | "integrations" | "settings"
+  active?: boolean
+}
+
+export type SidebarStatusMetric = {
+  label: string
+  value: number
+  tone: StatusTone
+}
+
+export const navigationItems: NavigationItem[] = [
+  { label: "Dashboard", icon: "dashboard", active: true },
+  { label: "Truck Ops", icon: "fleet" },
+  { label: "Corridors", icon: "routes" },
+  { label: "Loads", icon: "deliveries" },
+  { label: "Alerts", icon: "alerts" },
+  { label: "Analytics", icon: "analytics" },
+  { label: "Integrations", icon: "integrations" },
+  { label: "Settings", icon: "settings" },
+]
+
+export const sidebarStatus: SidebarStatusMetric[] = [
+  { label: "Truck Utilization", value: 91, tone: "cyan" },
+  { label: "Corridor Health", value: 86, tone: "green" },
+  { label: "ETA Confidence", value: 88, tone: "blue" },
+]
+
+export const quickActions: QuickAction[] = [
+  { label: "Reassign Truck", icon: "route" },
+  { label: "Open Dispatch", icon: "radio" },
+  { label: "Export Manifest", icon: "export" },
+  { label: "Compliance Check", icon: "shield" },
+]
+
+export const shipmentAlerts: ShipmentAlert[] = [
+  {
+    id: "alert-001",
+    title: "NH48 Container Diversion",
+    message:
+      "A container traffic pile-up near Gurugram toll has forced heavy trucks onto the Sohna elevated bypass. Expect 50 min delay for westbound loads.",
+    severity: "high",
+    type: "traffic",
+    location: "Gurugram, Haryana",
+    coordinates: { lat: 28.4595, lng: 77.0266 },
+    timestamp: "2026-04-25T08:52:00.000Z",
+    isRead: false,
+    affectsRoute: true,
+  },
+  {
+    id: "alert-002",
+    title: "Bridge Closure for Multi-Axle Trucks",
+    message:
+      "NHAI has temporarily shut the Dharuhera overbridge to heavy vehicles. Linehaul trucks are being diverted through Bilaspur and Pataudi Road.",
+    severity: "high",
+    type: "closure",
+    location: "Dharuhera, Haryana",
+    coordinates: { lat: 28.2054, lng: 76.7969 },
+    timestamp: "2026-04-25T08:39:00.000Z",
+    isRead: false,
+    affectsRoute: true,
+  },
+  {
+    id: "alert-003",
+    title: "Monsoon Flood Advisory",
+    message:
+      "Heavy rain and waterlogging reported on the Agra ring road freight belt. Long-haul trucks to Lucknow should shift to the Etawah corridor.",
+    severity: "medium",
+    type: "weather",
+    location: "Agra, Uttar Pradesh",
+    coordinates: { lat: 27.1767, lng: 78.0081 },
+    timestamp: "2026-04-25T08:26:00.000Z",
+    isRead: false,
+    affectsRoute: true,
+  },
+  {
+    id: "alert-004",
+    title: "Security Restriction on Border Corridor",
+    message:
+      "Security agencies have restricted commercial heavy-vehicle movement on the Jammu freight approach. Northbound trailers are being routed via Pathankot holding yard.",
+    severity: "high",
+    type: "security",
+    location: "Kathua, Jammu & Kashmir",
+    coordinates: { lat: 32.3694, lng: 75.5254 },
+    timestamp: "2026-04-25T08:17:00.000Z",
+    isRead: false,
+    affectsRoute: true,
+  },
+  {
+    id: "alert-005",
+    title: "Diesel Refill Recommended",
+    message:
+      "IndianOil truck-stop with high-speed diesel bay available 4 km ahead. Suggested for reefer truck OR-TRK-106 based on current fuel reserve.",
+    severity: "low",
+    type: "fuel",
+    location: "Kotputli, Rajasthan",
+    coordinates: { lat: 27.7061, lng: 76.1994 },
+    timestamp: "2026-04-25T08:08:00.000Z",
+    isRead: true,
+    affectsRoute: false,
+  },
+]
+
+export const shipmentVehicles: ShipmentVehicle[] = [
+  {
+    id: "OR-TRK-101",
+    driver: "Aarav Mehta",
+    vehicleType: "40 ft Container Truck",
+    cargo: "FMCG Pallets",
+    route: "Delhi ICD to Jaipur Distribution Park",
+    speed: 34,
+    fuel: 76,
+    status: "Delayed",
+    location: "Sohna Road Diversion, Haryana",
+    shipments: 18,
+    position: [28.3813, 77.0498],
+    activeRoutePath: [
+      [28.5245, 77.0842],
+      [28.4632, 77.0724],
+      [28.3813, 77.0498],
+      [28.2380, 76.8635],
+      [27.7061, 76.1994],
+      [26.9124, 75.7873],
+    ],
+    originalRoutePath: [
+      [28.5245, 77.0842],
+      [28.4595, 77.0266],
+      [28.3515, 76.9428],
+      [27.9881, 76.3850],
+      [27.7061, 76.1994],
+      [26.9124, 75.7873],
+    ],
+    reroute: {
+      cause: "delay",
+      reason: "NH48 congestion near Gurugram toll has stalled container traffic.",
+      divertedVia: "Sohna elevated bypass",
+      blockedZone: "Gurugram toll plaza",
+      etaImpactMinutes: 52,
+    },
+  },
+  {
+    id: "OR-TRK-102",
+    driver: "Ishita Verma",
+    vehicleType: "Reefer Truck",
+    cargo: "Pharma Cold Chain",
+    route: "Noida Sector 62 to IGI Cargo Terminal",
+    speed: 49,
+    fuel: 68,
+    status: "On Route",
+    location: "Akshardham, Delhi",
+    shipments: 14,
+    position: [28.6127, 77.2773],
+    activeRoutePath: [
+      [28.6304, 77.3649],
+      [28.6204, 77.3201],
+      [28.6127, 77.2773],
+      [28.5903, 77.2219],
+      [28.5562, 77.1000],
+    ],
+  },
+  {
+    id: "OR-TRK-103",
+    driver: "Rohan Bedi",
+    vehicleType: "Multi-Axle Trailer",
+    cargo: "Industrial Machinery",
+    route: "Manesar Plant to Neemrana Industrial Zone",
+    speed: 22,
+    fuel: 54,
+    status: "Delayed",
+    location: "Bilaspur Link Road, Haryana",
+    shipments: 9,
+    position: [28.2654, 76.8350],
+    activeRoutePath: [
+      [28.3515, 76.9428],
+      [28.3007, 76.8746],
+      [28.2654, 76.8350],
+      [28.2054, 76.7969],
+      [27.9881, 76.3850],
+    ],
+    originalRoutePath: [
+      [28.3515, 76.9428],
+      [28.2883, 76.8578],
+      [28.2054, 76.7969],
+      [27.9881, 76.3850],
+    ],
+    reroute: {
+      cause: "closure",
+      reason: "The Dharuhera overbridge is shut for overloaded and multi-axle trucks.",
+      divertedVia: "Bilaspur and Pataudi Road",
+      blockedZone: "Dharuhera overbridge",
+      etaImpactMinutes: 37,
+    },
+  },
+  {
+    id: "OR-TRK-104",
+    driver: "Sanya Kapoor",
+    vehicleType: "Flatbed Heavy Truck",
+    cargo: "Steel Coils",
+    route: "Faridabad Yard to Bhiwadi Metal Cluster",
+    speed: 42,
+    fuel: 63,
+    status: "On Route",
+    location: "Palwal Freight Stretch, Haryana",
+    shipments: 12,
+    position: [28.1426, 77.3360],
+    activeRoutePath: [
+      [28.4089, 77.3178],
+      [28.2744, 77.3073],
+      [28.1426, 77.3360],
+      [28.1717, 76.8250],
+      [28.2102, 76.8606],
+    ],
+  },
+  {
+    id: "OR-TRK-105",
+    driver: "Kabir Nanda",
+    vehicleType: "42T Box Trailer",
+    cargo: "Apparel Export Containers",
+    route: "Ghaziabad Hub to Ludhiana Dry Port",
+    speed: 45,
+    fuel: 58,
+    status: "On Route",
+    location: "Panipat, Haryana",
+    shipments: 20,
+    position: [29.3909, 76.9635],
+    activeRoutePath: [
+      [28.6692, 77.4538],
+      [28.8955, 77.0396],
+      [29.3909, 76.9635],
+      [30.7333, 76.7794],
+      [30.9000, 75.8573],
+    ],
+  },
+  {
+    id: "OR-TRK-106",
+    driver: "Meera Joshi",
+    vehicleType: "Reefer Truck",
+    cargo: "Dairy and Frozen Foods",
+    route: "Jaipur DC to Delhi Retail Belt",
+    speed: 39,
+    fuel: 24,
+    status: "On Route",
+    location: "Kotputli, Rajasthan",
+    shipments: 11,
+    position: [27.7061, 76.1994],
+    activeRoutePath: [
+      [26.9124, 75.7873],
+      [27.3913, 75.9590],
+      [27.7061, 76.1994],
+      [28.2054, 76.7969],
+      [28.5245, 77.0842],
+    ],
+  },
+  {
+    id: "OR-TRK-107",
+    driver: "Vivaan Suri",
+    vehicleType: "Long-Haul Trailer",
+    cargo: "Consumer Electronics",
+    route: "Delhi Warehouse to Lucknow Mega Hub",
+    speed: 31,
+    fuel: 66,
+    status: "Delayed",
+    location: "Etawah Diversion Corridor, Uttar Pradesh",
+    shipments: 17,
+    position: [26.7855, 79.0210],
+    activeRoutePath: [
+      [28.6469, 77.3156],
+      [27.1767, 78.0081],
+      [26.7855, 79.0210],
+      [26.4499, 80.3319],
+      [26.8467, 80.9462],
+    ],
+    originalRoutePath: [
+      [28.6469, 77.3156],
+      [27.1767, 78.0081],
+      [26.4499, 80.3319],
+      [26.8467, 80.9462],
+    ],
+    reroute: {
+      cause: "natural_disaster",
+      reason: "Waterlogging on the Agra freight belt is unsafe for loaded trailers.",
+      divertedVia: "Etawah inland freight corridor",
+      blockedZone: "Agra ring road flood zone",
+      etaImpactMinutes: 64,
+    },
+  },
+  {
+    id: "OR-TRK-108",
+    driver: "Ananya Rao",
+    vehicleType: "Heavy Duty Tractor Trailer",
+    cargo: "Telecom Equipment",
+    route: "Delhi Freight Terminal to Jammu Logistics Park",
+    speed: 19,
+    fuel: 71,
+    status: "Delayed",
+    location: "Pathankot Holding Yard, Punjab",
+    shipments: 8,
+    position: [32.2733, 75.6522],
+    activeRoutePath: [
+      [28.8955, 77.0396],
+      [30.7333, 76.7794],
+      [31.6340, 74.8723],
+      [32.2733, 75.6522],
+      [32.7266, 74.8570],
+    ],
+    originalRoutePath: [
+      [28.8955, 77.0396],
+      [30.7333, 76.7794],
+      [31.1048, 75.7877],
+      [32.3694, 75.5254],
+      [32.7266, 74.8570],
+    ],
+    reroute: {
+      cause: "conflict",
+      reason: "Commercial heavy vehicles have been diverted due to a security advisory on the Jammu border approach.",
+      divertedVia: "Pathankot holding yard and NH44 security corridor",
+      blockedZone: "Kathua freight approach",
+      etaImpactMinutes: 95,
+    },
+  },
+  {
+    id: "OR-TRK-109",
+    driver: "Dev Malhotra",
+    vehicleType: "Tanker Truck",
+    cargo: "Industrial Lubricants",
+    route: "Mathura Depot to Faridabad Plants",
+    speed: 41,
+    fuel: 73,
+    status: "On Route",
+    location: "Kosi Kalan, Uttar Pradesh",
+    shipments: 10,
+    position: [27.7949, 77.4378],
+    activeRoutePath: [
+      [27.4924, 77.6737],
+      [27.7949, 77.4378],
+      [28.1426, 77.3360],
+      [28.4089, 77.3178],
+    ],
+  },
+  {
+    id: "OR-TRK-110",
+    driver: "Priya Talwar",
+    vehicleType: "Curtain-Side Truck",
+    cargo: "E-commerce Parcels",
+    route: "Delhi Sort Center to Chandigarh Relay Hub",
+    speed: 53,
+    fuel: 62,
+    status: "On Route",
+    location: "Karnal, Haryana",
+    shipments: 24,
+    position: [29.6857, 76.9905],
+    activeRoutePath: [
+      [28.6692, 77.2434],
+      [29.1044, 77.2188],
+      [29.6857, 76.9905],
+      [30.7333, 76.7794],
+    ],
+  },
+  {
+    id: "OR-TRK-111",
+    driver: "Arjun Gill",
+    vehicleType: "48 ft Trailer",
+    cargo: "Automotive Components",
+    route: "Okhla Depot to Pune Forwarding",
+    speed: 0,
+    fuel: 21,
+    status: "Maintenance",
+    location: "Okhla Phase II Depot, Delhi",
+    shipments: 6,
+    position: [28.5273, 77.2749],
+    activeRoutePath: [
+      [28.5353, 77.2865],
+      [28.5319, 77.2816],
+      [28.5273, 77.2749],
+      [28.5221, 77.2684],
+    ],
+  },
+  {
+    id: "OR-TRK-112",
+    driver: "Nikhil Arora",
+    vehicleType: "Mini Heavy Truck",
+    cargo: "Spare Parts",
+    route: "Kashmere Gate to NCR Service Network",
+    speed: 27,
+    fuel: 69,
+    status: "Idle",
+    location: "Kashmere Gate, Delhi",
+    shipments: 13,
+    position: [28.6673, 77.2273],
+    activeRoutePath: [
+      [28.6562, 77.2410],
+      [28.6627, 77.2334],
+      [28.6673, 77.2273],
+      [28.6736, 77.2198],
+    ],
+  },
+]
