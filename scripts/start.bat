@@ -1,17 +1,18 @@
 @echo off
+cd /d "%~dp0\.."
 
-echo ===============================
-echo   OmniRoute Sentinel Startup
-echo ===============================
+echo ==============================================
+echo 🚀 OmniRoute Sentinel Startup (Hackathon Edition)
+echo ==============================================
 
 echo.
-echo Installing dependencies...
+echo [1/2] 📦 Installing dependencies...
 call npm install
 
 echo.
-echo Starting development server...
+echo [2/2] 🔌 Starting the Socket Server, Admin Dashboard, and Driver App...
 call npm run dev
 
 echo.
-echo Server is running!
+echo ✅ Servers have been shut down.
 pause

@@ -1,129 +1,90 @@
-# 🚀 OmniRoute Sentinel  
-### AI-Verified Supply Chain Defense
+<div align="center">
+  <img src="https://via.placeholder.com/150/000000/FFFFFF/?text=OmniRoute+Sentinel" alt="OmniRoute Sentinel Logo" width="120" />
+
+  # 🚀 OmniRoute Sentinel
+  **AI-Verified Supply Chain Defense & Real-Time Logistics Control Tower**
+  
+  [![Next.js](https://img.shields.io/badge/Next.js-15+-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+  [![Turborepo](https://img.shields.io/badge/Turborepo-Monorepo-EF4444?style=for-the-badge&logo=turborepo)](https://turbo.build/)
+  [![Socket.io](https://img.shields.io/badge/Socket.io-Real--Time-010101?style=for-the-badge&logo=socket.io)](https://socket.io/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+</div>
+
+<br/>
+
+## 🌟 The Vision
+
+**OmniRoute Sentinel** transforms traditional, reactive supply chains into **proactive decision engines**. 
+
+Instead of waiting for a delay to happen, our system leverages a preemptive disruption detection pipeline to **predict threats early** and immediately orchestrate safe, optimized route diversions before shipments are impacted.
+
+## 🏆 Why It Wins
+- **Real-Time Synergy**: A centralized control tower and live driver portals seamlessly communicating via WebSockets.
+- **Preemptive AI Routing**: Switches from traditional "reactive" rerouting to "proactive" AI-verified threat avoidance.
+- **Production-Ready Architecture**: Built on a highly scalable Turborepo structure.
 
 ---
 
-## 🧠 Overview
+## 🏗️ Architecture & Apps
 
-**OmniRoute Sentinel** is an AI-powered logistics intelligence system designed to transform supply chains from **reactive systems into proactive decision engines**.
+This project uses a modern **Turborepo** monorepo structure containing three synchronized microservices:
 
-Instead of reacting to delays, our system **predicts disruptions early** and suggests optimized routes to avoid them.
+### 1. 🎛️ Admin Dashboard (The Control Tower)
+A stunning, high-performance command center for fleet managers.
+- **Live Fleet Tracking:** See all vehicles map their coordinates in real-time.
+- **One-Click Dispatch:** Send new trucks to specific cities instantly.
+- **Dynamic Override:** Intervene and reroute shipments based on live external threat intel.
 
----
+### 2. 🚛 Driver App (The Execution Layer)
+A minimal, map-focused UI explicitly designed for on-the-road execution.
+- **Live Telemetry:** Streams real-time GPS coordinates directly to the Control Tower.
+- **Instant Updates:** AI rerouting overrides immediately ping the driver's interface over WebSockets.
 
-## 🌍 Problem Statement
-
-Modern supply chains suffer from:
-- Lack of real-time disruption awareness
-- Delayed response to external events (weather, traffic, strikes)
-- Inefficient routing decisions
-- Financial and operational losses
-
----
-
-## ⚡ Our Solution
-
-OmniRoute Sentinel introduces a **preemptive disruption detection system**:
-
-### 🔄 Workflow
-
-1. 📡 Fetch real-time data (news, weather, traffic)
-2. 🧠 Use AI to detect potential threats
-3. 🔍 Verify threats using external APIs
-4. 📍 Map risks to active shipments
-5. 🔁 Suggest optimized rerouting strategies
+### 3. 🔌 WebSocket Server (The Bridge)
+A low-latency event broker ensuring sub-second syncs between the Control Tower and all active Driver interfaces.
 
 ---
 
-## 🧩 System Architecture
+## 🛠️ Tech Stack
 
-### 🧠 Admin Dashboard (Control Tower)
-- Global shipment visibility
-- Risk monitoring
-- Alerts & analytics
-- Decision-making interface
-
----
-
-### 🚗 Driver App (Execution Layer)
-- Real-time navigation
-- Route updates
-- Disruption alerts
-- Minimal, map-focused UI
+- **Frameworks:** Next.js (App Router), React 19
+- **Monorepo:** Turborepo
+- **Real-Time Engine:** Socket.io, Express
+- **State Management:** Zustand
+- **Styling:** Tailwind CSS, Radix UI (shadcn/ui)
+- **Mapping:** Leaflet & React-Leaflet
 
 ---
 
-## 📁 Monorepo Structure
+## 🚀 Quick Start (For Collaborators)
 
-```
-omniroute-sentinel/
-│
-├── apps/
-│   ├── admin-dashboard/
-│   └── driver-app/
-│
-├── packages/
-│   ├── types/
-│   ├── api/
-│   └── ui/
-│
-├── services/
-│   ├── backend/
-│   └── ai-engine/
-│
-├── docs/
-│
-├── turbo.json
-├── package.json
-└── README.md
-```
----
+Getting the entire ecosystem up and running is as simple as one click!
 
-## ⚙️ Tech Stack
+### Option 1: The One-Click Script (Windows)
+1. Open the `scripts/` folder.
+2. Double-click `start.bat`.
+*This will safely navigate to the root, install all monorepo dependencies, and spin up the Socket Server, Admin Dashboard, and Driver App in parallel.*
 
-### 🎨 Frontend
-- Next.js (App Router)
-- TypeScript
-- Tailwind CSS
-- shadcn/ui
-
----
-
-### 🧠 Monorepo
-- Turborepo
-
----
-
-### 🔧 Backend (Planned)
-- Node.js + Express
-- MongoDB
-- Redis (optional)
-
----
-
-### 🤖 AI Layer (Planned)
-- OpenAI / Gemini APIs
-- NLP-based threat detection
-
----
-
-### 🌐 External APIs (Planned)
-- Weather APIs
-- Traffic APIs
-- News APIs
-
----
-
-## 🚀 Getting Started
-
-### 1. Clone the repo
+### Option 2: Manual Terminal Startup
 ```bash
+# 1. Clone the repository
 git clone https://github.com/YOUR_USERNAME/omniroute-sentinel.git
 cd omniroute-sentinel
+
+# 2. Install dependencies
+npm install
+
+# 3. Ignite the Turborepo engine
+npm run dev
 ```
 
-## Run Project (Windows)
+### 🌐 Accessing the Portals
+Once the dev server is running, open these in your browser:
+- **Admin Dashboard:** [http://localhost:3000](http://localhost:3000)
+- **Driver Portal:** [http://localhost:3001](http://localhost:3001) *(Type any vehicle ID to start driving!)*
+- **Socket Broker:** Running silently on port `4000`.
 
-Go to the scripts folder and double click:
-
-start.bat
+---
+<div align="center">
+  <i>Built with ⚡ during the Google Hackathon.</i>
+</div>
