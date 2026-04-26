@@ -1,12 +1,16 @@
 "use client"
 
 import L from "leaflet"
-import { MapContainer, Marker, Polyline, Popup, TileLayer, ZoomControl } from "react-leaflet"
+import { MapContainer, Marker, Polyline, Popup, TileLayer, ZoomControl, useMap } from "react-leaflet"
 import { Gauge, GitBranch, Route, ShieldAlert, Truck } from "lucide-react"
 
 import type { ShipmentVehicle } from "@repo/types"
 import { formatCoordinates, getFleetBounds, getRouteColor, getStatusBadgeClass } from "@/lib/map-utils"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { useAppStore } from "@/lib/store"
+import { toast } from "sonner"
+import { useEffect, useRef } from "react"
 
 const rerouteCauseLabel: Record<NonNullable<ShipmentVehicle["reroute"]>["cause"], string> = {
   delay: "Delay",
@@ -33,8 +37,37 @@ function createVehicleMarkerIcon(status: ShipmentVehicle["status"]) {
   })
 }
 
+function MapUpdater({ vehicles }: { vehicles: ShipmentVehicle[] }) {
+  const map = useMap()
+  const { selectedVehicleId, setSelectedVehicleId } = useAppStore()
+  
+  useEffect(() => {
+    if (selectedVehicleId) {
+      const vehicle = vehicles.find(v => v.id === selectedVehicleId)
+      if (vehicle) {
+        map.flyTo(vehicle.position, 14, { duration: 1.5 })
+        // wait for animation to finish, then we could open the popup.
+        // We will do this via a ref on the marker.
+        setTimeout(() => {
+          setSelectedVehicleId(null)
+        }, 2000)
+      }
+    }
+  }, [selectedVehicleId, map, vehicles, setSelectedVehicleId])
+  
+  return null
+}
+
 export default function FleetMapClient({ vehicles }: { vehicles: ShipmentVehicle[] }) {
+  const { optimizeRoute } = useAppStore()
   const reroutedTrucks = vehicles.filter((vehicle) => vehicle.reroute).length
+
+  const handleOptimize = (vehicle: ShipmentVehicle) => {
+    optimizeRoute(vehicle.id)
+    toast.success(`Route Optimized for ${vehicle.id}`, {
+      description: `Saved approximately ${Math.floor(Math.random() * 20 + 10)} minutes.`
+    })
+  }
 
   return (
     <div className="relative h-full w-full">
@@ -59,6 +92,7 @@ export default function FleetMapClient({ vehicles }: { vehicles: ShipmentVehicle
         scrollWheelZoom
       >
         <ZoomControl position="topright" />
+        <MapUpdater vehicles={vehicles} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -92,7 +126,16 @@ export default function FleetMapClient({ vehicles }: { vehicles: ShipmentVehicle
         ))}
 
         {vehicles.map((vehicle) => (
-          <Marker key={vehicle.id} position={vehicle.position} icon={createVehicleMarkerIcon(vehicle.status)}>
+          <Marker 
+            key={vehicle.id} 
+            position={vehicle.position} 
+            icon={createVehicleMarkerIcon(vehicle.status)}
+            ref={(ref) => {
+               if (ref && useAppStore.getState().selectedVehicleId === vehicle.id) {
+                 setTimeout(() => ref.openPopup(), 1500)
+               }
+            }}
+          >
             <Popup>
               <div className="w-[220px] p-4 space-y-3">
                 <div className="flex items-start justify-between gap-3">
@@ -141,6 +184,19 @@ export default function FleetMapClient({ vehicles }: { vehicles: ShipmentVehicle
                 <div className="rounded-md border border-slate-700/50 bg-slate-800/50 px-3 py-2 text-xs text-slate-400">
                   {formatCoordinates(vehicle.position)}
                 </div>
+
+                {(vehicle.status === "Delayed" || vehicle.reroute || vehicle.status === "Idle") && (
+                  <Button 
+                    size="sm" 
+                    className="w-full bg-cyan-600 hover:bg-cyan-500 text-white"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOptimize(vehicle);
+                    }}
+                  >
+                    Optimize Route
+                  </Button>
+                )}
               </div>
             </Popup>
           </Marker>

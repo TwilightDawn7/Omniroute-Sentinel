@@ -14,7 +14,8 @@ import { AlertsCard } from "@/components/dashboard/alerts-card"
 import { QuickActionsCard } from "@/components/dashboard/quick-actions-card"
 import { TelemetryTable } from "@/components/dashboard/telemetry-table"
 import { FleetMap } from "@/components/map/fleet-map"
-import { navigationItems, quickActions, shipmentAlerts, shipmentVehicles, sidebarStatus } from "@/lib/mock-data"
+import { navigationItems, quickActions, sidebarStatus } from "@/lib/mock-data"
+import { useAppStore } from "@/lib/store"
 
 type ParticleConfig = {
   x: number
@@ -43,6 +44,7 @@ function formatDate(date: Date) {
 }
 
 export function OmniRouteDashboard() {
+  const { vehicles, alerts, updateSimulation } = useAppStore()
   const [theme, setTheme] = useState<"dark" | "light">("dark")
   const [currentTime, setCurrentTime] = useState<Date | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -64,8 +66,15 @@ export function OmniRouteDashboard() {
       setCurrentTime(new Date())
     }, 1000)
 
-    return () => window.clearInterval(interval)
-  }, [])
+    const simInterval = window.setInterval(() => {
+      updateSimulation()
+    }, 2000)
+
+    return () => {
+      window.clearInterval(interval)
+      window.clearInterval(simInterval)
+    }
+  }, [updateSimulation])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -134,9 +143,9 @@ export function OmniRouteDashboard() {
     }
   }, [])
 
-  const activeVehicles = shipmentVehicles.filter((vehicle) => vehicle.status !== "Maintenance").length
-  const shipmentLoads = shipmentVehicles.reduce((total, vehicle) => total + vehicle.shipments, 0)
-  const reroutedTrucks = shipmentVehicles.filter((vehicle) => vehicle.reroute).length
+  const activeVehicles = vehicles.filter((vehicle) => vehicle.status !== "Maintenance").length
+  const shipmentLoads = vehicles.reduce((total, vehicle) => total + vehicle.shipments, 0)
+  const reroutedTrucks = vehicles.filter((vehicle) => vehicle.reroute).length
   const systemHealth = 96
 
   return (
@@ -176,7 +185,7 @@ export function OmniRouteDashboard() {
                   detail="Heavy shipment vehicles reporting live"
                   icon={Truck}
                   tone="cyan"
-                  trend={`${shipmentVehicles.length - activeVehicles} in depot or service`}
+                  trend={`${vehicles.length - activeVehicles} in depot or service`}
                 />
                 <OverviewMetricCard
                   title="Shipment Loads"
@@ -229,12 +238,12 @@ export function OmniRouteDashboard() {
                 </CardHeader>
                 <CardContent className="p-0">
                   <div className="h-[560px]">
-                    <FleetMap key={mapRefreshKey} vehicles={shipmentVehicles} />
+                    <FleetMap key={mapRefreshKey} vehicles={vehicles} />
                   </div>
                 </CardContent>
               </Card>
 
-              <TelemetryTable vehicles={shipmentVehicles} />
+              <TelemetryTable vehicles={vehicles} />
             </div>
           </div>
 
@@ -245,7 +254,7 @@ export function OmniRouteDashboard() {
                 formattedTime={currentTime ? formatTime(currentTime) : ""}
                 formattedDate={currentTime ? formatDate(currentTime) : ""}
               />
-              <AlertsCard alerts={shipmentAlerts} />
+              <AlertsCard alerts={alerts} />
               <QuickActionsCard actions={quickActions} />
             </div>
           </div>

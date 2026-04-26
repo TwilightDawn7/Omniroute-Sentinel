@@ -3,6 +3,7 @@ import { AlertCircle, BellRing, CloudRain, Fuel, MapPin, ShieldAlert, TriangleAl
 import type { ShipmentAlert } from "@repo/types"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useAppStore } from "@/lib/store"
 
 const alertStyles = {
   low: {
@@ -43,6 +44,17 @@ function formatAlertTime(timestamp: string) {
 }
 
 export function AlertsCard({ alerts }: { alerts: ShipmentAlert[] }) {
+  const { setSelectedVehicleId } = useAppStore()
+
+  const handleAlertClick = (alert: ShipmentAlert) => {
+    // Try to find a vehicle ID in the alert text
+    const textToSearch = `${alert.title} ${alert.message}`
+    const match = textToSearch.match(/OR-TRK-\d{3}/)
+    if (match) {
+      setSelectedVehicleId(match[0])
+    }
+  }
+
   return (
     <Card className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
       <CardHeader className="pb-2">
@@ -58,7 +70,11 @@ export function AlertsCard({ alerts }: { alerts: ShipmentAlert[] }) {
           const TypeIcon = typeIcons[alert.type]
 
           return (
-            <div key={alert.id} className="flex items-start space-x-3">
+            <div 
+              key={alert.id} 
+              className="flex items-start space-x-3 cursor-pointer hover:bg-slate-800/30 p-2 rounded-lg transition-colors -mx-2"
+              onClick={() => handleAlertClick(alert)}
+            >
               <div className={`mt-0.5 rounded-full border p-1 ${style.wrapperClass}`}>
                 <Icon className={`h-3 w-3 ${style.iconClass}`} />
               </div>
