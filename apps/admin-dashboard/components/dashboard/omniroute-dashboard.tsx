@@ -12,6 +12,8 @@ import { OverviewMetricCard } from "@/components/dashboard/overview-metric-card"
 import { OperationsClockCard } from "@/components/dashboard/operations-clock-card"
 import { AlertsCard } from "@/components/dashboard/alerts-card"
 import { QuickActionsCard } from "@/components/dashboard/quick-actions-card"
+import { SimulationControls } from "@/components/dashboard/simulation-controls"
+import { SystemInsights } from "@/components/dashboard/system-insights"
 import { TelemetryTable } from "@/components/dashboard/telemetry-table"
 import { FleetMap } from "@/components/map/fleet-map"
 import { navigationItems, quickActions, sidebarStatus } from "@/lib/mock-data"
@@ -44,7 +46,7 @@ function formatDate(date: Date) {
 }
 
 export function OmniRouteDashboard() {
-  const { vehicles, alerts, updateSimulation } = useAppStore()
+  const { vehicles, alerts, updateSimulation, isRunning, speedMultiplier } = useAppStore()
   const [theme, setTheme] = useState<"dark" | "light">("dark")
   const [currentTime, setCurrentTime] = useState<Date | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -66,15 +68,18 @@ export function OmniRouteDashboard() {
       setCurrentTime(new Date())
     }, 1000)
 
-    const simInterval = window.setInterval(() => {
-      updateSimulation()
-    }, 2000)
+    let simInterval: number | undefined;
+    if (isRunning) {
+      simInterval = window.setInterval(() => {
+        updateSimulation()
+      }, 2000 / speedMultiplier)
+    }
 
     return () => {
       window.clearInterval(interval)
-      window.clearInterval(simInterval)
+      if (simInterval) window.clearInterval(simInterval)
     }
-  }, [updateSimulation])
+  }, [updateSimulation, isRunning, speedMultiplier])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -254,6 +259,8 @@ export function OmniRouteDashboard() {
                 formattedTime={currentTime ? formatTime(currentTime) : ""}
                 formattedDate={currentTime ? formatDate(currentTime) : ""}
               />
+              <SimulationControls />
+              <SystemInsights />
               <AlertsCard alerts={alerts} />
               <QuickActionsCard actions={quickActions} />
             </div>

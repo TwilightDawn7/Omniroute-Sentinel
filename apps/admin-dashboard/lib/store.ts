@@ -24,14 +24,86 @@ interface AppState {
   updateSimulation: () => void;
   optimizeRoute: (vehicleId: string) => void;
   addAlert: (alert: ShipmentAlert) => void;
+  isRunning: boolean;
+  speedMultiplier: number;
+  addVehicle: () => void;
+  triggerTraffic: () => void;
+  triggerBreakdown: () => void;
+  clearAlerts: () => void;
+  setSimulationSpeed: (speed: number) => void;
+  toggleSimulation: () => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
   vehicles: shipmentVehicles.map(v => ({...v})),
   alerts: [...shipmentAlerts],
   selectedVehicleId: null,
+  isRunning: true,
+  speedMultiplier: 1,
   setSelectedVehicleId: (id) => set({ selectedVehicleId: id }),
   addAlert: (alert) => set((state) => ({ alerts: [alert, ...state.alerts] })),
+  clearAlerts: () => set({ alerts: [] }),
+  setSimulationSpeed: (speed) => set({ speedMultiplier: speed }),
+  toggleSimulation: () => set((state) => ({ isRunning: !state.isRunning })),
+  addVehicle: () => set((state) => {
+    // Generate a random vehicle
+    const newId = `OR-TRK-${Math.floor(Math.random() * 900 + 100)}`;
+    const startPos: CoordinateTuple = [28.6139 + (Math.random() - 0.5), 77.2090 + (Math.random() - 0.5)];
+    const endPos: CoordinateTuple = [28.6139 + (Math.random() - 0.5), 77.2090 + (Math.random() - 0.5)];
+    const newVehicle: ShipmentVehicle = {
+      id: newId,
+      driver: "New Driver",
+      vehicleType: "Standard Truck",
+      cargo: "General Cargo",
+      route: "Custom Route",
+      speed: 40,
+      fuel: 100,
+      status: "On Route",
+      location: "New Location",
+      shipments: Math.floor(Math.random() * 20 + 5),
+      position: startPos,
+      activeRoutePath: [startPos, interpolate(startPos, endPos, 0.5), endPos],
+    };
+    return { vehicles: [...state.vehicles, newVehicle] };
+  }),
+  triggerTraffic: () => set((state) => {
+    // Randomly select 2-4 vehicles
+    const count = Math.floor(Math.random() * 3) + 2;
+    const shuffled = [...state.vehicles].sort(() => 0.5 - Math.random());
+    const selectedIds = shuffled.slice(0, count).map(v => v.id);
+    
+    return {
+      vehicles: state.vehicles.map(v => {
+        if (selectedIds.includes(v.id)) {
+          return { ...v, status: 'Delayed', speed: Math.floor(Math.random() * 15 + 5) } as ShipmentVehicle;
+        }
+        return v;
+      })
+    };
+  }),
+  triggerBreakdown: () => set((state) => {
+    const onRouteVehicles = state.vehicles.filter(v => v.status === 'On Route' || v.status === 'Delayed');
+    if (onRouteVehicles.length === 0) return state;
+    
+    const target = onRouteVehicles[Math.floor(Math.random() * onRouteVehicles.length)];
+    const alert: ShipmentAlert = {
+        id: `alert-breakdown-${Date.now()}`,
+        title: `Vehicle Breakdown: ${target.id}`,
+        message: `Vehicle ${target.id} has experienced a critical breakdown.`,
+        location: target.location,
+        coordinates: { lat: target.position[0], lng: target.position[1] },
+        timestamp: new Date().toISOString(),
+        isRead: false,
+        affectsRoute: true,
+        type: 'closure',
+        severity: 'high'
+    };
+    
+    return {
+      alerts: [alert, ...state.alerts],
+      vehicles: state.vehicles.map(v => v.id === target.id ? { ...v, status: 'Idle', speed: 0 } as ShipmentVehicle : v)
+    };
+  }),
   optimizeRoute: (vehicleId) => set((state) => {
     const newVehicles = state.vehicles.map(v => {
       if (v.id === vehicleId) {
@@ -53,6 +125,8 @@ export const useAppStore = create<AppState>((set) => ({
     return { vehicles: newVehicles };
   }),
   updateSimulation: () => set((state) => {
+    if (!state.isRunning) return state;
+
     let newAlerts = [...state.alerts];
     
     const newVehicles = state.vehicles.map(v => {
