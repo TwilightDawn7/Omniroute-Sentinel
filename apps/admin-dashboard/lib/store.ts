@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { shipmentVehicles, shipmentAlerts } from './mock-data'
 import type { ShipmentVehicle, ShipmentAlert } from '@repo/types'
 import { CoordinateTuple } from '@repo/types'
+import { socket } from './socket'
 
 const interpolate = (p1: CoordinateTuple, p2: CoordinateTuple, fraction: number): CoordinateTuple => {
   return [
@@ -26,12 +27,13 @@ interface AppState {
   addAlert: (alert: ShipmentAlert) => void;
   isRunning: boolean;
   speedMultiplier: number;
-  addVehicle: () => void;
+  addVehicle: (id?: string, start?: CoordinateTuple, end?: CoordinateTuple) => void;
   triggerTraffic: () => void;
   triggerBreakdown: () => void;
   clearAlerts: () => void;
   setSimulationSpeed: (speed: number) => void;
   toggleSimulation: () => void;
+  updateVehicleFromSocket: (data: { vehicleId: string; lat: number; lng: number; speed: number; status: string }) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -45,11 +47,42 @@ export const useAppStore = create<AppState>((set) => ({
   clearAlerts: () => set({ alerts: [] }),
   setSimulationSpeed: (speed) => set({ speedMultiplier: speed }),
   toggleSimulation: () => set((state) => ({ isRunning: !state.isRunning })),
-  addVehicle: () => set((state) => {
-    // Generate a random vehicle
-    const newId = `OR-TRK-${Math.floor(Math.random() * 900 + 100)}`;
-    const startPos: CoordinateTuple = [28.6139 + (Math.random() - 0.5), 77.2090 + (Math.random() - 0.5)];
-    const endPos: CoordinateTuple = [28.6139 + (Math.random() - 0.5), 77.2090 + (Math.random() - 0.5)];
+  updateVehicleFromSocket: (data) => set((state) => {
+    const exists = state.vehicles.some(v => v.id === data.vehicleId);
+    let newVehicles = state.vehicles;
+    
+    if (exists) {
+      newVehicles = state.vehicles.map(v => 
+        v.id === data.vehicleId 
+          ? { ...v, position: [data.lat, data.lng] as CoordinateTuple, speed: data.speed, status: data.status, isReal: true } 
+          : v
+      );
+    } else {
+      // Create a basic vehicle if it doesn't exist
+      const newVehicle: ShipmentVehicle = {
+        id: data.vehicleId,
+        driver: "Real Driver",
+        vehicleType: "Real Truck",
+        cargo: "Live Cargo",
+        route: "Live Route",
+        speed: data.speed,
+        fuel: 100,
+        status: data.status,
+        location: "Live Location",
+        shipments: 10,
+        position: [data.lat, data.lng],
+        activeRoutePath: [[data.lat, data.lng]],
+      };
+      newVehicles = [...state.vehicles, newVehicle];
+    }
+    
+    return { vehicles: newVehicles, isRunning: false }; // Stop simulation when real data arrives
+  }),
+  addVehicle: (id?: string, start?: CoordinateTuple, end?: CoordinateTuple) => set((state) => {
+    // Generate a random vehicle or use provided
+    const newId = id || `OR-TRK-${Math.floor(Math.random() * 900 + 100)}`;
+    const startPos: CoordinateTuple = start || [28.6139 + (Math.random() - 0.5), 77.2090 + (Math.random() - 0.5)];
+    const endPos: CoordinateTuple = end || [28.6139 + (Math.random() - 0.5), 77.2090 + (Math.random() - 0.5)];
     const newVehicle: ShipmentVehicle = {
       id: newId,
       driver: "New Driver",
@@ -105,6 +138,8 @@ export const useAppStore = create<AppState>((set) => ({
     };
   }),
   optimizeRoute: (vehicleId) => set((state) => {
+    socket?.emit('vehicle:command', { type: 'optimize_route', vehicleId });
+    
     const newVehicles = state.vehicles.map(v => {
       if (v.id === vehicleId) {
         if (v.status === 'Delayed' || v.reroute || v.status === 'Idle') {

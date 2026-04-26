@@ -18,6 +18,7 @@ import { TelemetryTable } from "@/components/dashboard/telemetry-table"
 import { FleetMap } from "@/components/map/fleet-map"
 import { navigationItems, quickActions, sidebarStatus } from "@/lib/mock-data"
 import { useAppStore } from "@/lib/store"
+import { socket } from "@/lib/socket"
 
 type ParticleConfig = {
   x: number
@@ -46,11 +47,12 @@ function formatDate(date: Date) {
 }
 
 export function OmniRouteDashboard() {
-  const { vehicles, alerts, updateSimulation, isRunning, speedMultiplier } = useAppStore()
+  const { vehicles, alerts, updateSimulation, isRunning, speedMultiplier, updateVehicleFromSocket } = useAppStore()
   const [theme, setTheme] = useState<"dark" | "light">("dark")
   const [currentTime, setCurrentTime] = useState<Date | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [mapRefreshKey, setMapRefreshKey] = useState(0)
+  const [focusedVehicleId, setFocusedVehicleId] = useState<string | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -80,6 +82,20 @@ export function OmniRouteDashboard() {
       if (simInterval) window.clearInterval(simInterval)
     }
   }, [updateSimulation, isRunning, speedMultiplier])
+
+  useEffect(() => {
+    if (!socket) return;
+    
+    const onVehicleUpdate = (data: any) => {
+      updateVehicleFromSocket(data);
+    };
+    
+    socket.on('vehicle:update', onVehicleUpdate);
+    
+    return () => {
+      socket?.off('vehicle:update', onVehicleUpdate);
+    }
+  }, [updateVehicleFromSocket])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -243,12 +259,12 @@ export function OmniRouteDashboard() {
                 </CardHeader>
                 <CardContent className="p-0">
                   <div className="h-[560px]">
-                    <FleetMap key={mapRefreshKey} vehicles={vehicles} />
+                    <FleetMap key={mapRefreshKey} vehicles={focusedVehicleId ? vehicles.filter(v => v.id === focusedVehicleId) : vehicles} />
                   </div>
                 </CardContent>
               </Card>
 
-              <TelemetryTable vehicles={vehicles} />
+              <TelemetryTable vehicles={vehicles} focusedVehicleId={focusedVehicleId} onFocusVehicle={setFocusedVehicleId} />
             </div>
           </div>
 

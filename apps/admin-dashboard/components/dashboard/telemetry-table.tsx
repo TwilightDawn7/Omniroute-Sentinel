@@ -6,7 +6,13 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-export function TelemetryTable({ vehicles }: { vehicles: ShipmentVehicle[] }) {
+interface TelemetryTableProps {
+  vehicles: ShipmentVehicle[];
+  focusedVehicleId?: string | null;
+  onFocusVehicle?: (id: string | null) => void;
+}
+
+export function TelemetryTable({ vehicles, focusedVehicleId, onFocusVehicle }: TelemetryTableProps) {
   return (
     <Card className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm overflow-hidden">
       <CardHeader className="border-b border-slate-700/50 pb-3">
@@ -33,7 +39,11 @@ export function TelemetryTable({ vehicles }: { vehicles: ShipmentVehicle[] }) {
           </TableHeader>
           <TableBody>
             {vehicles.map((vehicle) => (
-              <TableRow key={vehicle.id} className="border-slate-700/30 hover:bg-slate-800/50">
+              <TableRow 
+                key={vehicle.id} 
+                className={`border-slate-700/30 cursor-pointer ${focusedVehicleId === vehicle.id ? 'bg-cyan-900/30 border-cyan-500/50' : 'hover:bg-slate-800/50'}`}
+                onClick={() => onFocusVehicle?.(vehicle.id === focusedVehicleId ? null : vehicle.id)}
+              >
                 <TableCell className="text-slate-200">
                   <div className="font-medium">{vehicle.id}</div>
                   <div className="text-xs text-slate-500">{vehicle.vehicleType}</div>
