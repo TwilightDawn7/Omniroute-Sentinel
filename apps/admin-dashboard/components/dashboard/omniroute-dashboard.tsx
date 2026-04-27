@@ -92,10 +92,22 @@ export function OmniRouteDashboard() {
     
     socket.on('vehicle:update', onVehicleUpdate);
     
+    // Register all initial vehicles so Driver App can fetch their real routes
+    vehicles.forEach(v => {
+      socket?.emit('vehicle:register', {
+        vehicleId: v.id,
+        origin: v.route.split(' to ')[0] || "Delhi",
+        destination: v.route.split(' to ')[1] || "Jaipur",
+        lat: v.position[0],
+        lng: v.position[1],
+        route: v.activeRoutePath.map(p => ({lat: p[0], lng: p[1]}))
+      });
+    });
+    
     return () => {
       socket?.off('vehicle:update', onVehicleUpdate);
     }
-  }, [updateVehicleFromSocket])
+  }, [updateVehicleFromSocket, vehicles])
 
   useEffect(() => {
     const canvas = canvasRef.current

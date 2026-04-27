@@ -7,7 +7,7 @@ import { socket } from "@/lib/socket";
 
 const REFRESH_INTERVAL = 30000;
 
-export function useRouteData(origin: string | null, destination: string | null, vehicleId?: string) {
+export function useRouteData(vehicleData: any | null, vehicleId?: string) {
   const [routeData, setRouteData] = useState<DriverRouteData | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
@@ -15,19 +15,34 @@ export function useRouteData(origin: string | null, destination: string | null, 
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
 
   const loadData = useCallback(async () => {
-    if (!origin || !destination) return; // Wait until origin/destination are known
+    if (!vehicleData) return;
     try {
-      const [routeRes, alertList] = await Promise.all([
-        fetch(`/api/route-data?origin=${origin}&destination=${destination}`, {
-          cache: "no-store",
-        }),
-        fetchAlerts(),
-      ]);
+      // Use real vehicle data instead of fallback default route
+      const distance = 150; // placeholder since we don't have turf.js here
+      const data: DriverRouteData = {
+        origin: vehicleData.origin || "Unknown",
+        destination: vehicleData.destination || "Unknown",
+        status: "on-route",
+        driverLocation: { lat: vehicleData.lat, lng: vehicleData.lng },
+        currentRoute: {
+          id: "route-main",
+          name: `${vehicleData.origin} → ${vehicleData.destination}`,
+          type: "current",
+          color: "#3b82f6",
+          estimatedTime: 120,
+          distance,
+          coordinates: vehicleData.route && vehicleData.route.length > 0 
+            ? vehicleData.route 
+            : [{ lat: vehicleData.lat, lng: vehicleData.lng }]
+        },
+        reroutedRoute: null,
+        blockedZones: [],
+        lastUpdated: new Date().toISOString(),
+      };
 
-      if (!routeRes.ok) throw new Error("Route fetch failed");
-      const routeJson: ApiResponse<DriverRouteData> = await routeRes.json();
+      const alertList = await fetchAlerts();
 
-      setRouteData(routeJson.data);
+      setRouteData(data);
       setAlerts(alertList);
       setLastRefreshed(new Date());
       setError(null);
@@ -36,7 +51,7 @@ export function useRouteData(origin: string | null, destination: string | null, 
     } finally {
       setLoading(false);
     }
-  }, [origin, destination]);
+  }, [vehicleData]);
 
   useEffect(() => {
     setLoading(true);
@@ -49,14 +64,15 @@ export function useRouteData(origin: string | null, destination: string | null, 
   useEffect(() => {
     if (!routeData || !socket) return;
     
-    const baseLat = routeData.currentRoute?.coordinates[0]?.lat || 28.6139;
-    const baseLng = routeData.currentRoute?.coordinates[0]?.lng || 77.2090;
+    // Always use vehicle.currentLocation / route instead of hardcoded Delhi coordinates
+    const baseLat = routeData.driverLocation.lat;
+    const baseLng = routeData.driverLocation.lng;
 
     const interval = setInterval(() => {
        socket?.emit("vehicle:update", {
          vehicleId: vehicleId || "OR-TRK-123", // Use dynamic ID
-         lat: baseLat + (Math.random() - 0.5) * 0.05,
-         lng: baseLng + (Math.random() - 0.5) * 0.05,
+         lat: baseLat + (Math.random() - 0.5) * 0.02,
+         lng: baseLng + (Math.random() - 0.5) * 0.02,
          speed: 40 + Math.random() * 20,
          status: "On Route"
        });

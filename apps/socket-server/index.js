@@ -28,7 +28,7 @@ io.on('connection', (socket) => {
     if (registeredVehicles[vehicleId]) {
       socket.emit('vehicle:info', registeredVehicles[vehicleId]);
     } else {
-      socket.emit('vehicle:info', { vehicleId, origin: "delhi", destination: "jaipur", notFound: true });
+      socket.emit('vehicle:info', { vehicleId, error: "Vehicle not found", notFound: true });
     }
   });
 
