@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="public/logo.png" alt="Admin Dashboard Logo" width="120" />
+</div>
+
 # 🎛️ Admin Dashboard (The Control Tower)
 
 **Part of the [OmniRoute Sentinel](../../README.md) Ecosystem.**

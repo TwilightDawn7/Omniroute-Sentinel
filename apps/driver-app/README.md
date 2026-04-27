@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="public/logo.png" alt="Driver App Logo" width="120" />
+</div>
+
 # 🚛 Driver App (The Execution Layer)
 
 **Part of the [OmniRoute Sentinel](../../README.md) Ecosystem.**
