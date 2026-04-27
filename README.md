@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://via.placeholder.com/150/000000/FFFFFF/?text=OmniRoute+Sentinel" alt="OmniRoute Sentinel Logo" width="120" />
+  <img src="logo.png" alt="OmniRoute Sentinel Logo" width="150" />
 
   # 🚀 OmniRoute Sentinel
   **AI-Verified Supply Chain Defense & Real-Time Logistics Control Tower**
