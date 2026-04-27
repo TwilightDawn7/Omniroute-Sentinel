@@ -13,7 +13,7 @@
 <br/>
 
 ## 🌐 Live Demos
-* 🎛️ **Admin Control Tower:** https://omniroute-sentinel-admin-dashboard-nine.vercel.app/
+* 🎛️ **Admin Control Tower:** https://omniroute-sentinel-admin-dashboard.vercel.app/
 * 🚛 **Driver Execution Portal:** https://omniroute-sentinel-driver-app.vercel.app/
 
 *(Note: The WebSocket server is running invisibly in the background on Render to sync these two applications in real-time.)*
