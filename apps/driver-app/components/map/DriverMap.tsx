@@ -32,7 +32,9 @@ export default function DriverMap({ routeData }: DriverMapProps) {
       });
 
       // Init map only once
+      let isFirstInit = false;
       if (!mapInstanceRef.current) {
+        isFirstInit = true;
         mapInstanceRef.current = L.map(mapRef.current!, {
           center: [routeData.driverLocation.lat, routeData.driverLocation.lng],
           zoom: 8,
@@ -201,7 +203,7 @@ export default function DriverMap({ routeData }: DriverMapProps) {
         routeData.driverLocation,
       ].map((c) => [c.lat, c.lng]);
 
-      if (allCoords.length > 0) {
+      if (allCoords.length > 0 && isFirstInit) {
         map.fitBounds(L.latLngBounds(allCoords), {
           padding: [60, 60],
           maxZoom: 10,

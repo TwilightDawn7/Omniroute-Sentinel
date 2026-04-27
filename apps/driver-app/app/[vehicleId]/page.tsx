@@ -43,7 +43,8 @@ export default function DriverPage() {
   const searchParams = useSearchParams();
   const vehicleId = (params?.vehicleId as string) || "UNKNOWN";
   
-  const [routeInfo, setRouteInfo] = useState<{ origin: string, destination: string } | null>(null);
+  const [vehicleData, setVehicleData] = useState<any>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     // If passed via URL (legacy support)
@@ -51,7 +52,13 @@ export default function DriverPage() {
     const urlDest = searchParams?.get("destination");
     
     if (urlOrigin && urlDest) {
-      setRouteInfo({ origin: urlOrigin, destination: urlDest });
+      setVehicleData({ 
+        origin: urlOrigin, 
+        destination: urlDest, 
+        lat: 28.6139, 
+        lng: 77.2090, 
+        route: [] 
+      });
       return;
     }
 
@@ -61,7 +68,11 @@ export default function DriverPage() {
     
     const handleInfo = (data: any) => {
       if (data.vehicleId === vehicleId) {
-        setRouteInfo({ origin: data.origin, destination: data.destination });
+        if (data.notFound) {
+           setErrorMsg(data.error || "Vehicle not found in active fleet");
+        } else {
+           setVehicleData(data);
+        }
       }
     };
 
@@ -72,15 +83,17 @@ export default function DriverPage() {
     };
   }, [vehicleId, searchParams]);
 
-  const { routeData, alerts, loading, error, lastRefreshed, refresh } =
-    useRouteData(routeInfo?.origin || null, routeInfo?.destination || null, vehicleId);
+  const { routeData, alerts, loading, error: routeError, lastRefreshed, refresh } =
+    useRouteData(vehicleData, vehicleId);
+
+  const error = errorMsg || routeError;
 
   const criticalCount = alerts.filter((a) => a.severity === "critical").length;
   const status = routeData?.status || "on-route";
   const sc = statusColors[status] || statusColors["on-route"];
 
   // Show a loading screen until the socket returns the vehicle origin and destination
-  if (!routeInfo) {
+  if (!vehicleData && !errorMsg) {
     return (
       <div style={{
         height: '100vh', width: '100vw', background: '#030712',
